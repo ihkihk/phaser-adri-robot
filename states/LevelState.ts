@@ -3,7 +3,6 @@
 /// <reference path="../characters/Enemy.ts"/>
 /// <reference path="../characters/Battery.ts"/>
 /// <reference path="../ui/StatusBar.ts"/>
-/// <reference path="../states/GameOverState.ts"/>
 
 
 
@@ -242,6 +241,11 @@ abstract class BaseLevelState extends BaseState implements ILevel {
                     this.player.recharge(this.PWR_INCR_PER_BATTERY);
             });
         }
+
+        let playerPos = this.getPlayerPosition();
+        if (playerPos.x > this.game.world.centerX - 30 && playerPos.x < this.game.world.centerX + 30 && playerPos.y < 50) {
+            this.goNextLevel();
+        }
     }
 
 
@@ -319,6 +323,24 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     }
 
     //
+    // LEVEL CHANGE
+    //
+    goNextLevel() {
+        this.levelMusic.stop();
+        this.bulletSound.stop();
+
+        let nextStateName: string;
+        if (this.levelNum + 1 <= 3) {
+            nextStateName = 'splash' + (this.levelNum + 1);
+        }
+        else {
+            nextStateName = 'theend';
+        }
+
+        this.game.state.start(nextStateName);
+    }
+
+    //
     // AUXILIARY
     //
     
@@ -342,5 +364,19 @@ class Level1 extends BaseLevelState {
     constructor() {
         super();
         this.levelNum = 1;
+    }
+}
+
+class Level2 extends BaseLevelState {
+    constructor() {
+        super();
+        this.levelNum = 2;
+    }
+}
+
+class Level3 extends BaseLevelState {
+    constructor() {
+        super();
+        this.levelNum = 3;
     }
 }

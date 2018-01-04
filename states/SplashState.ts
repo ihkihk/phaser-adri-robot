@@ -33,3 +33,17 @@ class Splash1 extends BaseSplashState {
         this.levelNum = 1;
     }
 }
+
+class Splash2 extends BaseSplashState {
+    constructor() {
+        super();
+        this.levelNum = 2;
+    }
+}
+
+class Splash3 extends BaseSplashState {
+    constructor() {
+        super();
+        this.levelNum = 3;
+    }
+}

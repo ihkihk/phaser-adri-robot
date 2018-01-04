@@ -2,6 +2,8 @@
 /// <reference path="states/MenuState.ts" />
 /// <reference path="states/SplashState.ts" />
 /// <reference path="states/LevelState.ts" />
+/// <reference path="states/GameOverState.ts"/>
+/// <reference path="states/EndState.ts" />
 /// <reference path="ui/UI.ts" />
 
 class Geometry {
@@ -76,6 +78,7 @@ class AdriTheRobot {
         this.game.load.script('splash', 'states/SplashState.js');
         this.game.load.script('level', 'states/LevelState.js');
         this.game.load.script('gameOver', 'states/GameOverState.js');
+        this.game.load.script('end', 'states/EndState.js');
         this.game.load.script('player', 'characters/Player.js');
         this.game.load.script('bullet', 'characters/Bullet.js');
         this.game.load.script('enemy', 'characters/Enemy.js');
@@ -88,7 +91,12 @@ class AdriTheRobot {
         this.game.state.add('menu', MenuState);
         this.game.state.add('splash1', Splash1);
         this.game.state.add('level1', Level1);
+        this.game.state.add('splash2', Splash2);
+        this.game.state.add('level2', Level2);
+        this.game.state.add('splash3', Splash3);
+        this.game.state.add('level3', Level3);
         this.game.state.add('gameover', GameOverState);
+        this.game.state.add('theend', EndState);
         this.game.state.start('menu');
     }
 }
