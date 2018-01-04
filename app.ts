@@ -2,6 +2,7 @@
 /// <reference path="states/MenuState.ts" />
 /// <reference path="states/SplashState.ts" />
 /// <reference path="states/LevelState.ts" />
+/// <reference path="ui/UI.ts" />
 
 class Geometry {
     static GAME_WIDTH_IN_PX: number = 512;
@@ -79,6 +80,8 @@ class AdriTheRobot {
         this.game.load.script('bullet', 'characters/Bullet.js');
         this.game.load.script('enemy', 'characters/Enemy.js');
         this.game.load.script('battery', 'characters/Battery.js');
+        this.game.load.script('statusBar', 'ui/StatusBar.js');
+        this.game.load.script('UI', 'ui/UI.js');
     }
 
     create() {

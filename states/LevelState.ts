@@ -2,6 +2,7 @@
 /// <reference path="../characters/Bullet.ts"/>
 /// <reference path="../characters/Enemy.ts"/>
 /// <reference path="../characters/Battery.ts"/>
+/// <reference path="../ui/StatusBar.ts"/>
 /// <reference path="../states/GameOverState.ts"/>
 
 
@@ -22,9 +23,8 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     map: Phaser.Tilemap;
     layer: Phaser.TilemapLayer;
 
-    powerBar: Phaser.Graphics;
-    powerText: Phaser.BitmapText;
-    
+    statusBar: StatusBar;
+
     player: Player;
     bullets: Bullet[];
     enemies: BaseEnemy[];
@@ -179,8 +179,10 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     }
 
     setupStatusBar() {
-        this.powerBar = this.game.add.graphics(0, 0);
-        this.powerText = this.addText(0, this.game.camera.y / 16 + 30.25, "POWER");
+        this.statusBar = new StatusBar(this.game, 
+            0, this.tileSprite.height - Geometry.STATUSBAR_HEIGHT_IN_PX,
+            Geometry.STATUSBAR_WIDTH_IN_PX, Geometry.STATUSBAR_HEIGHT_IN_PX, this.PWR_INITAL);
+        this.statusBar.setup();
     }
 
     //
@@ -190,7 +192,10 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     update() {
         this.game.input.update();
         this.player.update();
-        this.updateStatusBar();
+        if (this.statusBarNeedsUpdate) {
+            this.statusBar.update(this.player.power);
+            this.statusBarNeedsUpdate = false;
+        }
         this.enemies.forEach(enemy => {
             enemy.update();
         })
@@ -239,45 +244,6 @@ abstract class BaseLevelState extends BaseState implements ILevel {
         }
     }
 
-    updateStatusBar() {
-        //return;
-        if (! this.statusBarNeedsUpdate) {
-            return;
-        }
-
-        let COLOR_WHITE: number = Phaser.Color.createColor(255, 255, 255).color;
-
-        this.statusBarNeedsUpdate = false;
-
-        let barPos: Phaser.Point = new Phaser.Point(this.powerText.width + 10, 
-            this.tileSprite.height - Geometry.STATUSBAR_HEIGHT_IN_PX);
-
-        this.powerBar.beginFill(0);
-        this.powerBar.lineStyle(2, 0, 1);
-        this.powerBar.drawRect(0, barPos.y, Geometry.GAME_WIDTH_IN_PX, Geometry.STATUSBAR_HEIGHT_IN_PX);
-        this.powerBar.endFill();
-
-        this.powerBar.lineStyle(2, COLOR_WHITE, 2);
-        this.powerBar.drawRect(barPos.x, barPos.y, Geometry.GAME_WIDTH_IN_PX - barPos.x - 1, 
-            Geometry.STATUSBAR_HEIGHT_IN_PX - 1);
-
-        let color: number = 0;
-
-        if (this.player.power > 0.75 * this.PWR_INITAL) {
-            color = 0x00ff00;    
-        } else if (this.player.power > 0.35 * this.PWR_INITAL) {
-            color = 0x0000ff;
-        } else {
-            color = 0xff0000;
-        }
-
-        this.powerBar.beginFill(color);
-        this.powerBar.lineStyle(2, COLOR_WHITE, 0);
-        this.powerBar.drawRect(barPos.x + 1, barPos.y + 1, 
-            (this.player.power / this.PWR_INITAL) * (Geometry.GAME_WIDTH_IN_PX - barPos.x - 3), 
-            Geometry.STATUSBAR_HEIGHT_IN_PX - 3);
-        this.powerBar.endFill();
-    }
 
     //
     // EVENTS from Player
@@ -330,8 +296,7 @@ abstract class BaseLevelState extends BaseState implements ILevel {
         this.game.camera.y -= 1;
     
         if (this.game.camera.y > 0) {
-            this.powerText.position.y -= 1;
-            this.powerBar.position.y -= 1;
+            this.statusBar.moveBy(0, -1);
         }
          
         if (this.player.state instanceof PlayerStateRunning) {
