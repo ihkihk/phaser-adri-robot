@@ -48,6 +48,9 @@ class Player implements IPlayer {
         this.initialPower = initialPower;
 
         this.isWeaponLoaded = false;
+
+        this.velocity = 150;
+        this.walkingVelocity = 60;
     }
 
     setup() {
@@ -64,7 +67,7 @@ class Player implements IPlayer {
         this.game.physics.arcade.enable(this.sprite);
         this.spriteBody = this.sprite.body;
         this.spriteBody.collideWorldBounds = true;
-        this.spriteBody.setSize(32, 32, 0, 0);
+        this.spriteBody.setSize(30, 30, 1, 1);
         this.sprite.anchor.setTo(0.5, 0.5);
 
         this.isWeaponLoaded = true;
@@ -77,10 +80,7 @@ class Player implements IPlayer {
 
         this.spriteBody.velocity.set(0);
 
-        this.velocity = 150;
-        this.walkingVelocity = 60;
-
-        switch(this.sprite.animations.currentFrame.index) {
+        switch (this.sprite.animations.currentFrame.index) {
             case 0:
                 this.sprite.rotation = -0.1;
                 break;
@@ -113,15 +113,15 @@ class Player implements IPlayer {
     }
 
     walk() {
-        //if (this.noCursorKeyDown()) {
+        if (this.noCursorKeyDown()) {
             this.spriteBody.velocity.y = - this.walkingVelocity;
-        //}
+        }
     }
 
     wasHit() {
-        this.damageSound.onStop.add(function() {
+        this.damageSound.onStop.add(() => {
             this.sprite.animations.play('run');
-        }.bind(this));
+        });
         this.damageSound.play();
         this.sprite.animations.play('hit');
         this.decreasePower(1);
@@ -186,18 +186,20 @@ interface IPlayerState {
 
 class PlayerStateRunning implements IPlayerState {
     player: IPlayer;
+    playerBody: Phaser.Physics.Arcade.Body;
 
     constructor(player: Player) {
         this.player = player;
+        this.playerBody = player.sprite.body;
     }
 
     update(cursors: Phaser.CursorKeys, keyboard: Phaser.Keyboard, camera: Phaser.Camera) {
         if (cursors.up.isDown) {
-            this.player.runUp();
+            if (this.playerBody.y > camera.y + this.playerBody.height) {
+                this.player.runUp();
+            }
         } else if (cursors.down.isDown) {
-            if ((<Phaser.Physics.Arcade.Body>this.player.sprite.body).y <
-                camera.y + camera.height
-                - (<Phaser.Physics.Arcade.Body>this.player.sprite.body).height) {
+            if (this.playerBody.y < camera.y + camera.height - this.playerBody.height - Geometry.STATUSBAR_HEIGHT_IN_PX) {
                 this.player.runDown();
             }
         }

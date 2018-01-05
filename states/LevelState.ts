@@ -297,6 +297,12 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     //
 
     scrollMap() {
+        if (this.player.spriteBody.y + this.player.sprite.height > this.game.camera.y + this.game.camera.height - Geometry.STATUSBAR_HEIGHT_IN_PX
+            && (this.cursors.down.isDown || this.cursors.left.isDown || this.cursors.right.isDown)) {
+            this.game.time.events.add(Phaser.Timer.SECOND / 32, this.scrollMap.bind(this));
+            return;
+        }
+
         this.game.camera.y -= 1;
     
         if (this.game.camera.y > 0) {
