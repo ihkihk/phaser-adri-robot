@@ -195,9 +195,11 @@ class PlayerStateRunning implements IPlayerState {
 
     update(cursors: Phaser.CursorKeys, keyboard: Phaser.Keyboard, camera: Phaser.Camera) {
         if (cursors.up.isDown) {
-            this.player.runUp();
+            if (this.playerBody.y > camera.y + this.playerBody.height) {
+                this.player.runUp();
+            }
         } else if (cursors.down.isDown) {
-            if (this.playerBody.y < camera.y + camera.height - this.playerBody.height) {
+            if (this.playerBody.y < camera.y + camera.height - this.playerBody.height - Geometry.STATUSBAR_HEIGHT_IN_PX) {
                 this.player.runDown();
             }
         }
