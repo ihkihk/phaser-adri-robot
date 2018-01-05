@@ -27,7 +27,7 @@ class StatusBar implements IStatusBar {
 
     setup() {
         this.powerBar = this.game.add.graphics(0, 0);
-        this.powerText = UI.addText(this.game, this.x + 4, this.y + (this.h - UI.FONT_SIZE)/2, 'POWER');
+        this.powerText = UI.addText(this.game, this.x + 4, this.y + (this.h - Geometry.BITMAP_FONT_SIZE)/2, 'POWER');
     }
 
     update(level: number) {

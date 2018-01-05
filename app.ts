@@ -27,6 +27,8 @@ class Geometry {
 
     static VIEW_WIDTH_IN_PX: number = Geometry.GAME_WIDTH_IN_PX;
     static VIEW_HEIGHT_IN_PX: number = Geometry.GAME_HEIGHT_IN_PX - Geometry.STATUSBAR_HEIGHT_IN_PX;
+
+    static BITMAP_FONT_SIZE: number = 14;
 }
 
 class AdriTheRobot {
