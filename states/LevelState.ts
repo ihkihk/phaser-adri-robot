@@ -189,17 +189,28 @@ abstract class BaseLevelState extends BaseState implements ILevel {
     //
 
     update() {
+        this.game.debug.text('Bullets: ' + this.bullets.length + ', enemies: ' + this.enemies.length, 32, 32);
         this.game.input.update();
         this.player.update();
         if (this.statusBarNeedsUpdate) {
             this.statusBar.update(this.player.power);
             this.statusBarNeedsUpdate = false;
-        }
-        this.enemies.forEach(enemy => {
-            enemy.update();
-        })
-        this.bullets.forEach(bullet => {
-            bullet.update();
+        };
+        this.enemies.forEach((enemy, i) => {
+            if (enemy.spriteBody.y > this.game.camera.y + this.game.camera.height + enemy.sprite.height) {
+                enemy.sprite.destroy();
+                this.enemies.splice(i, 1);
+            } else {
+                enemy.update();
+            }
+        });
+        this.bullets.forEach((bullet, i) => {
+            if (bullet.sprite.position.y + bullet.sprite.height < this.game.camera.y) {
+                bullet.sprite.destroy();
+                this.bullets.splice(i, 1);
+            } else {
+                bullet.update();
+            }
         });
         this.updateCollisions();
     }

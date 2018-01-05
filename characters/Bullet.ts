@@ -33,16 +33,15 @@ class Bullet {
     }
 
     update() {
-        this.game.physics.arcade.collide(this.sprite, this.layer, function() {
-            this.sprite.position.x = 0;
-            this.sprite.position.y = 0;
-        }.bind(this));
-
-        if (this.sprite.position.x == 0 && this.sprite.position.y == 0) {
-            this.destroyed = false;
-            this.sprite.destroy();
-
+        // The bullet cannot be destroyed with sprite.destroy inside of the 
+        // collide functions when the collision is with a TileMap
+        this.game.physics.arcade.collide(this.sprite, this.layer, () => {
+            this.sprite.position.setTo(0, 0);
             this.level.evtBulletHit(this, null);
+        });
+
+        if (this.sprite.position.equals(new Phaser.Point(0,0))) {
+            this.sprite.destroy();
         }
     }
 
