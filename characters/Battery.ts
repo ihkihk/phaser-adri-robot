@@ -21,6 +21,9 @@ class Battery {
     setup() {
         this.sprite = this.game.add.sprite(this.x, this.y, 'battery');
 
+        this.sprite.animations.add('battery', [1,2,3], 2, true);
+        this.sprite.animations.play('battery');
+        
         this.game.physics.arcade.enable(this.sprite);
         this.spriteBody = this.sprite.body;
 
