@@ -234,7 +234,7 @@ abstract class BaseLevelState extends BaseState implements ILevel {
 
         // Bullet-Enemy
         for (let i: number = 0; i < this.enemies.length; i++) {
-            for (let j: number = 0; j < this.bullets.length; j++) {
+            for (let j: number = 0; j < this.bullets.length && this.enemies[i]; j++) {
                 this.game.physics.arcade.collide(this.enemies[i].sprite, this.bullets[j].sprite, () => {
                     this.enemies[i].sprite.destroy();
                     this.enemies.splice(i, 1);
