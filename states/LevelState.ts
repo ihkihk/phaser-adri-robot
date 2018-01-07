@@ -196,7 +196,7 @@ abstract class BaseLevelState extends BaseState implements ILevel {
             this.statusBarNeedsUpdate = false;
         };
         this.enemies.forEach((enemy, i) => {
-            if (enemy.spriteBody.y > this.game.camera.y + this.game.camera.height + enemy.sprite.height) {
+            if (enemy.sprite.top > this.game.camera.view.bottom) {
                 enemy.sprite.destroy();
                 this.enemies.splice(i, 1);
             } else {
@@ -204,7 +204,7 @@ abstract class BaseLevelState extends BaseState implements ILevel {
             }
         });
         this.bullets.forEach((bullet, i) => {
-            if (bullet.sprite.position.y + bullet.sprite.height < this.game.camera.y) {
+            if (bullet.sprite.bottom < this.game.camera.view.top) {
                 bullet.sprite.destroy();
                 this.bullets.splice(i, 1);
             } else {
@@ -223,13 +223,13 @@ abstract class BaseLevelState extends BaseState implements ILevel {
         }
 
         // Enemy-Player
-        for (let i: number = 0; i < this.enemies.length; i++) {
-            this.game.physics.arcade.collide(this.enemies[i].sprite, this.player.sprite, () => {
+        this.enemies.forEach((enemy, i) => {
+            this.game.physics.arcade.collide(enemy.sprite, this.player.sprite, () => {
                 this.evtPlayerHit();
-                this.enemies[i].sprite.destroy();
+                enemy.sprite.destroy();
                 this.enemies.splice(i, 1);
             });
-        }
+        });
 
         // Bullet-Enemy
         for (let i: number = 0; i < this.enemies.length; i++) {
@@ -244,13 +244,13 @@ abstract class BaseLevelState extends BaseState implements ILevel {
         }
 
         // Player-Battery
-        for (let i: number = 0; i < this.batteries.length; i++) {
-            this.game.physics.arcade.collide(this.batteries[i].sprite, this.player.sprite, () => {
-                    this.batteries[i].sprite.destroy();
+        this.batteries.forEach((battery, i) => {
+            this.game.physics.arcade.collide(battery.sprite, this.player.sprite, () => {
+                    battery.sprite.destroy();
                     this.batteries.splice(i, 1);
                     this.player.recharge(this.PWR_INCR_PER_BATTERY);
             });
-        }
+        });
 
         let playerPos = this.getPlayerPosition();
         if (playerPos.x > this.game.world.centerX - 30 && playerPos.x < this.game.world.centerX + 30 && playerPos.y < 50) {
